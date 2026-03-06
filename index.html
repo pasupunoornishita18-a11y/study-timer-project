@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Study Timer</title>
+
+<style>
+body{
+font-family: Arial;
+text-align:center;
+background:#f4f6f8;
+}
+
+.container{
+margin-top:100px;
+}
+
+#timer{
+font-size:50px;
+margin:20px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+font-size:16px;
+}
+
+#report{
+margin-top:30px;
+font-size:18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Smart Study Timer & Distraction Tracker</h1>
+
+<div id="timer">25:00</div>
+
+<button onclick="startTimer()">Start</button>
+<button onclick="pauseTimer()">Pause</button>
+<button onclick="resetTimer()">Reset</button>
+
+<h3>Distractions: <span id="distractionCount">0</span></h3>
+
+<div id="report"></div>
+
+</div>
+
+<script>
+
+let time = 1500;
+let timer;
+let distractions = 0;
+
+function updateTimer(){
+let minutes = Math.floor(time/60);
+let seconds = time%60;
+
+seconds = seconds < 10 ? "0"+seconds : seconds;
+
+document.getElementById("timer").innerHTML =
+minutes + ":" + seconds;
+
+if(time <= 0){
+clearInterval(timer);
+generateReport();
+}
+
+time--;
+}
+
+function startTimer(){
+timer = setInterval(updateTimer,1000);
+}
+
+function pauseTimer(){
+clearInterval(timer);
+}
+
+function resetTimer(){
+clearInterval(timer);
+time = 1500;
+distractions = 0;
+document.getElementById("distractionCount").innerHTML = distractions;
+document.getElementById("report").innerHTML = "";
+updateTimer();
+}
+
+function generateReport(){
+
+let productivity = Math.max(0,100 - distractions*10);
+
+document.getElementById("report").innerHTML =
+"Study Session Completed <br>" +
+"Distractions: " + distractions + "<br>" +
+"Productivity Score: " + productivity + "%";
+}
+
+document.addEventListener("visibilitychange", function(){
+
+if(document.hidden){
+distractions++;
+document.getElementById("distractionCount").innerHTML = distractions;
+}
+
+});
+
+updateTimer();
+
+</script>
+
+</body>
+</html>
